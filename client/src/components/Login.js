@@ -2,56 +2,54 @@ import React,{useState} from "react";
 import axiosWithAuth from '../utils/axiosWithAuth'
 import axios from 'axios'
 
-const Login = () => {
+const Login = (props) => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
   const [credentials, setCredentials] = useState({
     username: '',
     password: '', 
-});
+})
 
-  const changeHandle = e => {
+const handleChanges = e => {
     setCredentials({
-      ...credentials, 
-      [e.target.name]:e.target.value,
+        ...credentials,
+        [e.target.name]: e.target.value
     })
-  }
+}
 
-  const submitHandle = e => {
-    e.preventDefault();
-    axiosWithAuth()
-    .post(`http://localhost:5000/api/login`, credentials)
-    .then(res => {
-      // console.log(res.data)
-      localStorage.setItem('token', res.data.payload);
-    })
-    .catch(err => console.log(err.response))
-  }
+    const submitHandler = e => {
+      e.preventDefault()
+      axiosWithAuth()
+      .post("/login", credentials)
+      .then(res => {
+        localStorage.setItem('token', res.data.payload)
+        props.history.push('/bubble')
+      })
+      .catch(err => console.log(err))
+    }
 
-
-
-  return (
-    <div className="loginForm">
-        <form onSubmit={submitHandle}>
+    return ( 
+        <div className="loginForm">
+        <form onSubmit={submitHandler}>
             <input 
             type='text'
             name='username'
             placeholder='username'  
             value={credentials.username}
-            onChange={changeHandle}
+            onChange={handleChanges}
             />
             <input 
             type='password'
             name='password'
             placeholder='password'  
             value={credentials.password}
-            onChange={changeHandle}
+            onChange={handleChanges}
             />
             <button type='submit'>Login</button>
         </form>
         </div>
-  );
-};
+     );
+}
 
 export default Login;
